@@ -45,14 +45,26 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         dismissViewControllerAnimated(true, completion: nil)
     }
     @IBAction func saveButt(sender: AnyObject) {
-        let imageData = UIImageJPEGRepresentation(imagePicked.image!, 0.6)
-        let compressedJPGImage = UIImage(data: imageData!)
-        UIImageWriteToSavedPhotosAlbum(compressedJPGImage!, nil, nil, nil)
-        let alert = UIAlertView(title: "Wow",
-                                message: "Your image has been saved to Photo Library!",
-                                delegate: nil,
-                                cancelButtonTitle: "Ok")
-        alert.show()
+        if imagePicked.image != nil {
+        
+            let imageData = UIImageJPEGRepresentation(imagePicked.image!, 0.6)
+            let compressedJPGImage = UIImage(data: imageData!)
+            UIImageWriteToSavedPhotosAlbum(compressedJPGImage!, nil, nil, nil)
+            
+            let alert = UIAlertController(title: "Guardado", message: "Su foto ha sido guardada en la galería.", preferredStyle: .Alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .Default, handler: { _ in
+                NSLog("The \"OK\" alert occured.")
+            }))
+            presentViewController(alert, animated: true, completion: nil)
+        } else {
+            let alert = UIAlertController(title: "Error", message: "Ha ocurrido un error al guardar", preferredStyle: .Alert)
+            alert.view.tintColor = UIColor.redColor()
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .Default, handler: { _ in
+                NSLog("The \"OK\" alert occured.")
+            }))
+            presentViewController(alert, animated: true, completion: nil)
+
+        }
     }
 
 }
