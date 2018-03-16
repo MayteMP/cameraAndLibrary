@@ -45,7 +45,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         dismissViewControllerAnimated(true, completion: nil)
     }
     @IBAction func saveButt(sender: AnyObject) {
-        if imagePicked.image != nil {
+        /*if imagePicked.image != nil {
         
             let imageData = UIImageJPEGRepresentation(imagePicked.image!, 0.6)
             let compressedJPGImage = UIImage(data: imageData!)
@@ -63,8 +63,40 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 NSLog("The \"OK\" alert occured.")
             }))
             presentViewController(alert, animated: true, completion: nil)
-
+        }*/
+        if let capturePhotoImage = self.imagePicked.image {
+            if let imageData = UIImagePNGRepresentation(capturePhotoImage) {
+                let encodedImageData = imageData.base64EncodedStringWithOptions(.Encoding64CharacterLineLength)
+                //base64EncodedDataWithOptions(.Encoding64CharacterLineLength)
+                let url = NSURL(string: "http://172.16.200.70:3000/create-image")!
+                let request = NSMutableURLRequest(URL: url)
+                request.HTTPMethod = "POST"
+                
+                let postString = "image=\(encodedImageData)"
+                request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding)
+                let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
+                    guard let data = data where error == nil else {
+                        print("error=(error)")
+                        return
+                    }
+                    /*if let httpStatus = response as? HTTPURLResponse where httpStatus.statusCode != 200 {           // check for http errors
+                        print("statusCode should be 200, but is (httpStatus.statusCode)")
+                        print("response = (response)")
+                    }*/
+                    let responseString = String(data: data, encoding: NSUTF8StringEncoding)
+                    print("responseString = (responseString)")
+                }
+                task.resume()
+            }
+        } else {
+            let alert = UIAlertController(title: "Error", message: "Ha ocurrido un error al guardar", preferredStyle: .Alert)
+            alert.view.tintColor = UIColor.redColor()
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .Default, handler: { _ in
+                NSLog("The \"OK\" alert occured.")
+            }))
+            presentViewController(alert, animated: true, completion: nil)
         }
+        
     }
 
 }
