@@ -1,6 +1,6 @@
 # cameraAndLibrary
 
-La aplicación móvil fue basada en el siguiente enlace <br/>
+based in <br/>
 https://turbofuture.com/cell-phones/Access-Photo-Camera-and-Library-in-Swift
 
 
